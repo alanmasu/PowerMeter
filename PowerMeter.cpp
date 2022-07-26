@@ -4,12 +4,12 @@
 #include "PowerMeter.h"
 
 String Measure::toString()const {
-  return "Voltage: " + String(rmsVoltage) + "Power: " + String(realPower) + "Current: " + String(rmsCurrent) +
-         "Power sec.: " + String(realPowerSec) + "Current sec.: " + String(rmsCurrentSec);
+  return "Voltage: " + String(rmsVoltage) + " Power: " + String(realPower) + " Current: " + String(rmsCurrent) +
+         " Power sec.: " + String(realPowerSec) + " Current sec.: " + String(rmsCurrentSec);
 }
 
-PowerMeter::PowerMeter(byte pinVoltageInput, byte pinCurrentInput, byte pinCurrentInputSec,  int ADCBits,
-                       double FS_V, double FS_I, double FS_I_SEC): FS_V(FS_V), FS_I(FS_I), FS_I_SEC(FS_I_SEC) {
+PowerMeter::PowerMeter(byte pinVoltageInput, byte pinCurrentInput, byte pinCurrentInputSec,
+                       double FS_V, double FS_I, double FS_I_SEC, int ADCBits): FS_V(FS_V), FS_I(FS_I), FS_I_SEC(FS_I_SEC) {
   DebugPort = &Serial;
   debug = true;
   this->pinVoltageInput = pinVoltageInput;
@@ -66,6 +66,7 @@ void PowerMeter::loop(int timeoutForReadAll, int semicyclesForReadAll) {
   double voltageSum, currentSum, currentSumSec, powerSum, powerSumSec;
 
   if (debug) DebugPort->println("Start reading");
+  uint32_t t1 = millis();
   // ------------------------------------------------------------------------------ reset counters and variables
   semicycleCounter = 0;
   sampleCounter = 0;
@@ -92,6 +93,10 @@ void PowerMeter::loop(int timeoutForReadAll, int semicyclesForReadAll) {
       rmsCurrentSec = 0;
       realPower = 0;
       realPowerSec = 0;
+      if (debug){
+        DebugPort->print("Stop reading for timeout, read in: ");
+        DebugPort->println(millis()-t1);
+      } 
       return;
     }
 
@@ -180,6 +185,10 @@ void PowerMeter::loop(int timeoutForReadAll, int semicyclesForReadAll) {
   measure.rmsCurrentSec = rmsCurrentSec;
   measure.realPower = realPower;
   measure.realPowerSec = realPowerSec;
+  if (debug){
+    DebugPort->print("Stop reading, read in: ");
+    DebugPort->println(millis()-t1);
+  } 
 }
 
 double PowerMeter::getVoltage()const {
@@ -201,6 +210,25 @@ Measure PowerMeter::getMeasure()const {
   return measure;
 }
 
+void PowerMeter::getADCValues(int values[])const{
+  values[0] = analogRead(pinVoltageInput);
+  values[1] = analogRead(pinCurrentInput);
+  values[2] = analogRead(pinCurrentInputSec);
+  if(debug && DebugPort != NULL){
+    DebugPort->println(String(values[0]) + ", " + String(values[1]) + ", " + String(values[2]));
+  }
+}
+
+void PowerMeter::printADCValues()const{
+  if(DebugPort != NULL){
+    DebugPort->print(analogRead(pinVoltageInput));
+    DebugPort->print(", ");
+    DebugPort->print(analogRead(pinCurrentInput));
+    DebugPort->print(", ");
+    DebugPort->print(analogRead(pinCurrentInputSec));
+  }
+}
+
 void PowerMeter::setPins(byte pinVoltageInput, byte pinCurrentInput, byte pinCurrentInputSec) {
   this->pinVoltageInput = pinVoltageInput;
   this->pinCurrentInput = pinCurrentInput;
@@ -215,14 +243,20 @@ void PowerMeter::setADCBits(uint8_t bits) {
   ZERO_MIN = MAX_COUNT * 0.45;
 }
 
-void PowerMeter::setVoltageOfset(uint32_t ofset) {
+void PowerMeter::setVoltageOffset(uint32_t ofset) {
   voltageOffset = ofset;
 }
-void PowerMeter::setCurrentOfset(uint32_t ofset) {
+void PowerMeter::setCurrentOffset(uint32_t ofset) {
   currentOffset = ofset;
 }
-void PowerMeter::setCurrentSecOfset(uint32_t ofset) {
+void PowerMeter::setCurrentSecOffset(uint32_t ofset) {
   currentOffsetSec = ofset;
+}
+
+void PowerMeter::setOffsets(uint32_t vOffset, uint32_t iOffset, uint32_t i2Offset){
+  voltageOffset = vOffset;
+  currentOffset = iOffset;
+  currentOffsetSec = i2Offset;
 }
 
 void PowerMeter::setDebug(bool debug) {

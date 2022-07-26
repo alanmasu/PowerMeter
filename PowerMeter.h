@@ -17,8 +17,8 @@ typedef struct Measure {
 
 class PowerMeter {
   public:
-    PowerMeter(byte pinVoltageInput = 34, byte pinCurrentInput = 32, byte pinCurrentInputSec = 35, int ADCBits = 12,
-               double FS_V = 189.33E-3, double FS_I = 67.27E-3, double FS_I_SEC = 63.63E-3);
+    PowerMeter(byte pinVoltageInput = 34, byte pinCurrentInput = 32, byte pinCurrentInputSec = 35,
+               double FS_V = 189.33E-3, double FS_I = 67.27E-3, double FS_I_SEC = 63.63E-3, int ADCBits = 12);
     ~PowerMeter() {};
 
     void loop(int timeoutForReadAll = 500, int semicyclesForReadAll = 20);
@@ -29,18 +29,17 @@ class PowerMeter {
     double getPower()const;
     double getPowerSec()const;
     Measure getMeasure()const;
+    void getADCValues(int values[])const;
+
+    void printADCValues()const;
 
     void setPins(byte pinVoltageInput, byte pinCurrentInput, byte pinCurrentInputSec);
     void setADCBits(uint8_t bits);
-
-
-    //    void setVoltageFS(double FS);
-    //    void setCurrentFS(double FS);
-    //    void setCurrentSecFS(double FS);
-
-    void setVoltageOfset(uint32_t ofset);
-    void setCurrentOfset(uint32_t ofset);
-    void setCurrentSecOfset(uint32_t ofset);
+    
+    void setVoltageOffset(uint32_t ofset);
+    void setCurrentOffset(uint32_t ofset);
+    void setCurrentSecOffset(uint32_t ofset);
+    void setOffsets(uint32_t vOffset, uint32_t iOffset, uint32_t i2Offset);
     void setDebug(bool debug);
 
   protected:
