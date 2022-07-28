@@ -17,8 +17,8 @@ typedef struct Measure {
 
 class PowerMeter {
   public:
-    PowerMeter(byte pinVoltageInput = 34, byte pinCurrentInput = 32, byte pinCurrentInputSec = 35,
-               double FS_V = 189.33E-3, double FS_I = 67.27E-3, double FS_I_SEC = 63.63E-3, int ADCBits = 12);
+    PowerMeter(double FS_V = 189.33E-3, double FS_I = 67.27E-3, double FS_I_SEC = 63.63E-3,
+               byte pinVoltageInput = 34, byte pinCurrentInput = 32, byte pinCurrentInputSec = 35, int ADCBits = 12);
     ~PowerMeter() {};
 
     void loop(int timeoutForReadAll = 500, int semicyclesForReadAll = 20);

@@ -8,8 +8,8 @@ String Measure::toString()const {
          " Power sec.: " + String(realPowerSec) + " Current sec.: " + String(rmsCurrentSec);
 }
 
-PowerMeter::PowerMeter(byte pinVoltageInput, byte pinCurrentInput, byte pinCurrentInputSec,
-                       double FS_V, double FS_I, double FS_I_SEC, int ADCBits): FS_V(FS_V), FS_I(FS_I), FS_I_SEC(FS_I_SEC) {
+PowerMeter::PowerMeter(double FS_V, double FS_I, double FS_I_SEC,
+                       byte pinVoltageInput, byte pinCurrentInput, byte pinCurrentInputSec, int ADCBits): FS_V(FS_V), FS_I(FS_I), FS_I_SEC(FS_I_SEC) {
   DebugPort = &Serial;
   debug = true;
   this->pinVoltageInput = pinVoltageInput;
