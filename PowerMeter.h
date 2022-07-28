@@ -1,6 +1,8 @@
 #ifndef __POWERMETER_H__
 #define __POWERMETER_H__
 
+#define DO1 5
+
 #include <Arduino.h>
 #include <esp_int_wdt.h>
 #include <esp_task_wdt.h>
