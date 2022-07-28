@@ -72,7 +72,7 @@ void setup() {
 
   //Start WebServer and OTA
   connectionManager.startWebServer();
-  connectionManager.setOTAHostname("ESP32");
+  connectionManager.setOTAHostname("ESP32-Wattmetro");
   connectionManager.startOTA();
 
   //Setting rebootCallback and reboot options
@@ -83,7 +83,7 @@ void setup() {
   Serial.println("You can reach me also at: " + connectionManager.getOTAHostname() + ".local/");
   
   //Setting MQTT server
-  connectionManager.setMQTTServer(&client, "ESP32", mosquittoServer);
+  connectionManager.setMQTTServer(&client, "ESP32-Wattmetro", mosquittoServer);
   connectionManager.setTopics(topics, 2);
   connectionManager.setCallback(callback);
   connectionManager.startMQTT();
